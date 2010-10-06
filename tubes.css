@@ -1,0 +1,10 @@
+.station-button {
+    border-style: none;
+    background-color: grey;
+}
+.station-button-on {
+    background-color: red;
+}
+.station-button-playing {
+    background-color: green;
+}
