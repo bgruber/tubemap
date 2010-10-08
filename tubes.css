@@ -1,6 +1,10 @@
 .station-button {
     border-style: none;
     background-color: grey;
+    height: 14px;
+    width: 14px;
+    border-radius: 7px;
+    -moz-border-radius: 7px;
 }
 .station-button-on {
     background-color: red;
