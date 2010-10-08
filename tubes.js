@@ -1,81 +1,87 @@
 var sound_dir = "sounds";
-var audio_files = [{audio: "Algate.ogg"},
-                   {audio: "Algate_East.ogg"},
-                   {audio: "Angel.ogg"},
-                   {audio: "Baker_Street.ogg"},
-                   {audio: "Bank.ogg"},
-                   {audio: "Barbican.ogg"},
-                   {audio: "Bayswater.ogg"},
-                   {audio: "Blackfriars.ogg"},
-                   {audio: "Bond_Street.ogg"},
-                   {audio: "Borough.ogg"},
-                   {audio: "Cannon_Street.ogg"},
-                   {audio: "Chancery_Lane.ogg"},
-                   {audio: "Charing_Cross.ogg"},
-                   {audio: "Covent_Garden.ogg"},
-                   {audio: "Earls_Court.ogg"},
-                   {audio: "Edgware_Road.ogg"},
-                   {audio: "Elephant_Castle.ogg"},
-                   {audio: "Embankment.ogg"},
-                   {audio: "Euston.ogg"},
-                   {audio: "Euston_Square.ogg"},
-                   {audio: "Farringdon.ogg"},
-                   {audio: "Gloucester_Road.ogg"},
-                   {audio: "Goodge_Street.ogg"},
-                   {audio: "Great_Portland_Street.ogg"},
-                   {audio: "Green_Park.ogg"},
-                   {audio: "High_Street_Kensington.ogg"},
-                   {audio: "Holborn.ogg"},
-                   {audio: "Hyde_Park_Corner.ogg"},
-                   {audio: "Kings_Cross.ogg"},
-                   {audio: "Knightsbridge.ogg"},
-                   {audio: "Lambeth_North.ogg"},
-                   {audio: "Lancaster_Gate.ogg"},
-                   {audio: "Leicester_Square.ogg"},
-                   {audio: "Liverpool_Street.ogg"},
-                   {audio: "London_Bridge.ogg"},
-                   {audio: "Mansion_House.ogg"},
-                   {audio: "Marble_Arch.ogg"},
-                   {audio: "Marylebone.ogg"},
-                   {audio: "Monument.ogg"},
-                   {audio: "Moorgate.ogg"},
-                   {audio: "Notting_Hill_Gate.ogg"},
-                   {audio: "Old_Street.ogg"},
-                   {audio: "Oxford_Circus.ogg"},
-                   {audio: "Paddington.ogg"},
-                   {audio: "Picadilly_Circus.ogg"},
-                   {audio: "Pimlico.ogg"},
-                   {audio: "Queensway.ogg"},
-                   {audio: "Regents_Park.ogg"},
-                   {audio: "Russell_Square.ogg"},
-                   {audio: "Sloane_Square.ogg"},
-                   {audio: "South_Kensington.ogg"},
-                   {audio: "Southwark.ogg"},
-                   {audio: "St_Jamess_Park.ogg"},
-                   {audio: "St_Pauls.ogg"},
-                   {audio: "Temple.ogg"},
-                   {audio: "Tottenham_Court_Road.ogg"},
-                   {audio: "Tower_Hill.ogg"},
-                   {audio: "Tube1.ogg"},
-                   {audio: "Tube10.ogg"},
-                   {audio: "Tube11.ogg"},
-                   {audio: "Tube2.ogg"},
-                   {audio: "Tube3.ogg"},
-                   {audio: "Tube4.ogg"},
-                   {audio: "Tube5.ogg"},
-                   {audio: "Tube6.ogg"},
-                   {audio: "Tube7.ogg"},
-                   {audio: "Tube8.ogg"},
-                   {audio: "Tube9.ogg"},
-                   {audio: "Vauxhall.ogg"},
-                   {audio: "Victoria.ogg"},
-                   {audio: "Warren_Street.ogg"},
-                   {audio: "Waterloo.ogg"},
-                   {audio: "Westminster.ogg"}];
+var audio_files = [{audio: "Algate.mp3"},
+                   {audio: "Algate_East.mp3"},
+                   {audio: "Angel.mp3"},
+                   {audio: "Baker_Street.mp3"},
+                   {audio: "Bank.mp3"},
+                   {audio: "Barbican.mp3"},
+                   {audio: "Bayswater.mp3"},
+                   {audio: "Blackfriars.mp3"},
+                   {audio: "Bond_Street.mp3"},
+                   {audio: "Borough.mp3"},
+                   {audio: "Cannon_Street.mp3"},
+                   {audio: "Chancery_Lane.mp3"},
+                   {audio: "Charing_Cross.mp3"},
+                   {audio: "Covent_Garden.mp3"},
+                   {audio: "Earls_Court.mp3"},
+                   {audio: "Edgware_Road.mp3"},
+                   {audio: "Elephant_Castle.mp3"},
+                   {audio: "Embankment.mp3"},
+                   {audio: "Euston.mp3"},
+                   {audio: "Euston_Square.mp3"},
+                   {audio: "Farringdon.mp3"},
+                   {audio: "Gloucester_Road.mp3"},
+                   {audio: "Goodge_Street.mp3"},
+                   {audio: "Great_Portland_Street.mp3"},
+                   {audio: "Green_Park.mp3"},
+                   {audio: "High_Street_Kensington.mp3"},
+                   {audio: "Holborn.mp3"},
+                   {audio: "Hyde_Park_Corner.mp3"},
+                   {audio: "Kings_Cross.mp3"},
+                   {audio: "Knightsbridge.mp3"},
+                   {audio: "Lambeth_North.mp3"},
+                   {audio: "Lancaster_Gate.mp3"},
+                   {audio: "Leicester_Square.mp3"},
+                   {audio: "Liverpool_Street.mp3"},
+                   {audio: "London_Bridge.mp3"},
+                   {audio: "Mansion_House.mp3"},
+                   {audio: "Marble_Arch.mp3"},
+                   {audio: "Marylebone.mp3"},
+                   {audio: "Monument.mp3"},
+                   {audio: "Moorgate.mp3"},
+                   {audio: "Notting_Hill_Gate.mp3"},
+                   {audio: "Old_Street.mp3"},
+                   {audio: "Oxford_Circus.mp3"},
+                   {audio: "Paddington.mp3"},
+                   {audio: "Picadilly_Circus.mp3"},
+                   {audio: "Pimlico.mp3"},
+                   {audio: "Queensway.mp3"},
+                   {audio: "Regents_Park.mp3"},
+                   {audio: "Russell_Square.mp3"},
+                   {audio: "Sloane_Square.mp3"},
+                   {audio: "South_Kensington.mp3"},
+                   {audio: "Southwark.mp3"},
+                   {audio: "St_Jamess_Park.mp3"},
+                   {audio: "St_Pauls.mp3"},
+                   {audio: "Temple.mp3"},
+                   {audio: "Tottenham_Court_Road.mp3"},
+                   {audio: "Tower_Hill.mp3"},
+                   {audio: "Tube1.mp3"},
+                   {audio: "Tube10.mp3"},
+                   {audio: "Tube11.mp3"},
+                   {audio: "Tube2.mp3"},
+                   {audio: "Tube3.mp3"},
+                   {audio: "Tube4.mp3"},
+                   {audio: "Tube5.mp3"},
+                   {audio: "Tube6.mp3"},
+                   {audio: "Tube7.mp3"},
+                   {audio: "Tube8.mp3"},
+                   {audio: "Tube9.mp3"},
+                   {audio: "Vauxhall.mp3"},
+                   {audio: "Victoria.mp3"},
+                   {audio: "Warren_Street.mp3"},
+                   {audio: "Waterloo.mp3"},
+                   {audio: "Westminster.mp3"}];
+
+soundManager.url = './sm';
+soundManager.useHTML5Audio = true;
 
 function Stop(id, filename) {
     this.id = id;
-    this.audio = new Audio(filename);
+    this.audio = soundManager.createSound({
+        id: id + '_audio',
+        url: filename,
+        autoLoad: true});
     this.on = false;
     this.buttonId = function() {
         return this.id + '_button';
@@ -83,45 +89,46 @@ function Stop(id, filename) {
 }
 
 var stops = [];
-(function() {
-    var id_prefix = 'stop';
-    for(var i = 0; i != audio_files.length; i++) {
-        stops[i] = new Stop(id_prefix+i,
-                            sound_dir + "/" + audio_files[i].audio);
-    }
-})();
+
 
 $(function() {
-    for(var i = 0; i != stops.length; i++) {
-        var button_id = stops[i].buttonId();
-        $('#tubemap').append('<input type="button" class="station-button" id="' + button_id + '"/>');
-        function makeToggler(j) {
-            return function() {
-                $(this).toggleClass('station-button-on');
-                stops[j].on = !stops[j].on;
-            }
+    soundManager.onload = function() {
+        var id_prefix = 'stop';
+        for(var i = 0; i != audio_files.length; i++) {
+            stops[i] = new Stop(id_prefix+i,
+                                sound_dir + "/" + audio_files[i].audio);
         }
-        $('#' + button_id).click(makeToggler(i));
-        $('#tubemap').append(stops[i].audio);
-    }
 
-    $('#play_button').click(function() {
-        $(this).attr('disabled', true);
-        onstops = stops.filter(function(e) { return e.on; });
-        $.each(function(i, x) { x.audio.load(); });
-        audioChain(onstops);
-    });
-})
+        for(var i = 0; i != stops.length; i++) {
+            var button_id = stops[i].buttonId();
+            $('#tubemap').append('<input type="button" class="station-button" id="' + button_id + '"/>');
+            function makeToggler(j) {
+                return function() {
+                    $(this).toggleClass('station-button-on');
+                    stops[j].on = !stops[j].on;
+                }
+            }
+            $('#' + button_id).click(makeToggler(i));
+        }
+
+        $('#play_button').click(function() {
+            $(this).attr('disabled', true);
+            onstops = stops.filter(function(e) { return e.on; });
+            $.each(function(i, x) { x.audio.load(); });
+            audioChain(onstops);
+        });
+    }
+});
 
 function audioChain(stops) {
     var current;
     if(current = stops.shift()) {
-        current.audio.addEventListener('ended', function() {
-                $('#'+current.buttonId()).removeClass('station-button-playing');
-                audioChain(stops);
-            });
-        $('#'+current.buttonId()).addClass('station-button-playing');
         current.audio.play();
+        current.audio._onjustbeforefinish = function() {
+            $('#'+current.buttonId()).removeClass('station-button-playing');
+            audioChain(stops);
+        };
+        $('#'+current.buttonId()).addClass('station-button-playing');
     } else {
         $('#play_button').attr('disabled', false);
     }
