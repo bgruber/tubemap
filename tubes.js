@@ -153,6 +153,7 @@ function Stop(id, stop) {
 }
 
 var stops = [];
+var onstops = [];
 
 $(function() {
     soundManager.onload = function() {
@@ -165,6 +166,14 @@ $(function() {
             return function() {
                 $(this).toggleClass('station-button-on');
                 stops[j].on = !stops[j].on;
+                if(stops[j].on) {
+                    onstops.push(stops[j]);
+                }
+                else {
+                    onstops = onstops.filter(function(e) {
+                        return e.id != stops[j].id;
+                    });
+                }
             }
         }
         for(var i = 0; i != stops.length; i++) {
@@ -180,18 +189,20 @@ $(function() {
 
         $('#play_button').click(function() {
             $(this).attr('disabled', true);
-            var onstops = stops.filter(function(e) { return e.on; });
 
+            // i'm going to use pop, so copy the array first
+            var o = onstops.slice(0);
+            
             // load up all of the sounds
-            $.each(onstops, function(i, x) { x.sound.load(); });
+            $.each(o, function(i, x) { x.sound.load(); });
 
             // a special onfinish for the last one, to shut the whole
             // thing down.
-            var s = onstops.pop();
+            var s = o.pop();
             var regularonfinish = s.sound.options.onfinish;
             s.sound.options.onfinish = (function(s) {
                 return function() {
-                    $(this).attr('disabled', false);
+                    $('#play_button').attr('disabled', false);
                     regularonfinish();
                     s.sound.options.onfinish = regularonfinish;
                 }
@@ -199,7 +210,7 @@ $(function() {
 
             // set the chain up
             var next = s;
-            while(s = onstops.pop()) {
+            while(s = o.pop()) {
                 s.sound.options.onjustbeforefinish = (function(next) {
                     return function() {
                         next.sound.play();
