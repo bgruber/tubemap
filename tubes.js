@@ -126,6 +126,7 @@ var audio_files = [{audio: "Algate.mp3",
 
 soundManager.url = './sm';
 soundManager.useHTML5Audio = true;
+soundManager.debugMode = false;
 
 function Stop(id, stop) {
     this.id = id;
@@ -154,15 +155,16 @@ function Stop(id, stop) {
 
 var stops = [];
 var onstops = [];
+var train_sounds = [];
 
 $(function() {
     soundManager.onload = function() {
-        var train_sounds = $.map([0,1,2,3,4,5,6,7,8,9,10],
-                                 function(i) {
-                                     return soundManager.createSound({
-                                         id: 'train' + i,
-                                         url: 'sounds/Tube' + (i + 1) + '.mp3',
-                                         autoLoad: false });});
+        train_sounds = $.map([0,1,2,3,4,5,6,7,8,9,10],
+                             function(i) {
+                                 return soundManager.createSound({
+                                     id: 'train' + i,
+                                     url: 'sounds/Tube' + (i + 1) + '.mp3',
+                                     autoLoad: false });});
 
         var id_prefix = 'stop';
         for(var i = 0; i != audio_files.length; i++) {
@@ -197,51 +199,41 @@ $(function() {
         $('#play_button').click(function() {
             $(this).attr('disabled', true);
 
-            // i'm going to use pop, so copy the array first
+            // i'm going to use shift, so copy the array first
             var o = onstops.slice(0);
             
             // load up all of the sounds
             $.each(o, function(i, x) { x.sound.load(); });
 
-            // a special onfinish for the last one, to shut the whole
-            // thing down.
-            var s = o.pop();
-            var regularonfinish = s.sound.options.onfinish;
-            s.sound.options.onfinish = (function(s) {
-                return function() {
-                    $('#play_button').attr('disabled', false);
-                    regularonfinish();
-                    s.sound.options.onfinish = regularonfinish;
-                }
-            })(s);
-
-            // set the chain up
-            var next = s;
-            while(s = o.pop()) {
-                var ts = train_sounds.random_element();
-                ts.load();
-                s.sound.options.onjustbeforefinish = (function(next, ts) {
-                    return function() {
-                        // pick a random train sound
-                        ts.options.onjustbeforefinish = function() {
-                            next.sound.play();
-                        }
-                        ts.play();
-                    }
-                })(next, ts);
-                next = s;
-            }
-
             // aaand start 'em playing
-            next.sound.play();
+            playNext(o.shift(), o);
         });
     }
 });
+
+function playNext(s, stops) {
+    var next;
+    if (next = stops.shift()) {
+        var trainSound = train_sounds.random_element();
+        trainSound.options.onjustbeforefinish = function() {
+            playNext(next, stops);
+        }
+        s.sound.options.onjustbeforefinish = trainSound.play;
+    } else {
+        var regularonfinish = s.sound.options.onfinish;
+        s.sound.options.onfinish = function() {
+            $('#play_button').attr('disabled', false);
+            regularonfinish();
+            s.sound.options.onfinish = regularonfinish;
+        }
+    }
+    s.sound.play();
+}
 
 Array.prototype.random_element = function() {
     function getRandomInt(min, max)  
     {  
         return Math.floor(Math.random() * (max - min + 1)) + min;  
     }
-    return this[getRandomInt(0, this.length + 1)];
+    return this[getRandomInt(0, this.length - 1)];
 }
