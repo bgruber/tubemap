@@ -127,14 +127,25 @@ var audio_files = [{audio: "Algate.mp3",
 soundManager.url = './sm';
 soundManager.useHTML5Audio = true;
 
-function Stop(id, audio) {
+function Stop(id, stop) {
     this.id = id;
-    this.x = audio.x;
-    this.y = audio.y;
-    this.audio = soundManager.createSound({
+    this.x = stop.x;
+    this.y = stop.y;
+    this.sound = soundManager.createSound({
         id: id + '_audio',
-        url: "sounds/" + audio.audio,
-        autoLoad: true});
+        url: "sounds/" + stop.audio,
+        autoLoad: false,
+        onplay: (function(o) {
+            return function() {
+                $('#' + o.buttonId()).addClass('station-button-playing');
+            }
+        })(this),
+        onfinish: (function(o) {
+            return function() {
+                $('#' + o.buttonId()).removeClass('station-button-playing');
+            }
+        })(this)
+    });
     this.on = false;
     this.buttonId = function() {
         return this.id + '_button';
@@ -169,23 +180,36 @@ $(function() {
 
         $('#play_button').click(function() {
             $(this).attr('disabled', true);
-            onstops = stops.filter(function(e) { return e.on; });
-            $.each(function(i, x) { x.audio.load(); });
-            audioChain(onstops);
+            var onstops = stops.filter(function(e) { return e.on; });
+
+            // load up all of the sounds
+            $.each(onstops, function(i, x) { x.sound.load(); });
+
+            // a special onfinish for the last one, to shut the whole
+            // thing down.
+            var s = onstops.pop();
+            var regularonfinish = s.sound.options.onfinish;
+            s.sound.options.onfinish = (function(s) {
+                return function() {
+                    $(this).attr('disabled', false);
+                    regularonfinish();
+                    s.sound.options.onfinish = regularonfinish;
+                }
+            })(s);
+
+            // set the chain up
+            var next = s;
+            while(s = onstops.pop()) {
+                s.sound.options.onjustbeforefinish = (function(next) {
+                    return function() {
+                        next.sound.play();
+                    }
+                })(next);
+                next = s;
+            }
+
+            // aaand start 'em playing
+            next.sound.play();
         });
     }
 });
-
-function audioChain(stops) {
-    var current;
-    if(current = stops.shift()) {
-        current.audio.play();
-        current.audio._onjustbeforefinish = function() {
-            $('#'+current.buttonId()).removeClass('station-button-playing');
-            audioChain(stops);
-        };
-        $('#'+current.buttonId()).addClass('station-button-playing');
-    } else {
-        $('#play_button').attr('disabled', false);
-    }
-}
