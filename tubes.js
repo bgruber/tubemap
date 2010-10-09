@@ -1,3 +1,34 @@
+// because IE8 doesn't have Array.filter...
+if (!Array.prototype.filter)  
+{  
+  Array.prototype.filter = function(fun /*, thisp */)  
+  {  
+    "use strict";  
+  
+    if (this === void 0 || this === null)  
+      throw new TypeError();  
+  
+    var t = Object(this);  
+    var len = t.length >>> 0;  
+    if (typeof fun !== "function")  
+      throw new TypeError();  
+  
+    var res = [];  
+    var thisp = arguments[1];  
+    for (var i = 0; i < len; i++)  
+    {  
+      if (i in t)  
+      {  
+        var val = t[i]; // in case fun mutates this  
+        if (fun.call(thisp, val, i, t))  
+          res.push(val);  
+      }  
+    }  
+  
+    return res;  
+  };  
+}
+
 var sound_dir = "sounds";
 var audio_files = [{audio: "Algate.mp3",
                     x: 976, y: 313},
@@ -126,7 +157,8 @@ var audio_files = [{audio: "Algate.mp3",
 
 soundManager.url = './sm';
 soundManager.useHTML5Audio = true;
-soundManager.debugMode = false;
+soundManager.debugMode = true;
+soundManager.debugFlash = true;
 
 function Stop(id, stop) {
     this.id = id;
@@ -215,19 +247,19 @@ function playNext(s, stops) {
     var next;
     if (next = stops.shift()) {
         var trainSound = train_sounds.random_element();
-        trainSound.options.onjustbeforefinish = function() {
-            playNext(next, stops);
-        }
-        s.sound.options.onjustbeforefinish = trainSound.play;
+        s.sound.play({onjustbeforefinish: function() {
+            trainSound.play({onjustbeforefinish: function() {
+                playNext(next, stops);
+            }});
+        }});
     } else {
         var regularonfinish = s.sound.options.onfinish;
-        s.sound.options.onfinish = function() {
+        s.sound.play({onfinish: function() {
             $('#play_button').attr('disabled', false);
             regularonfinish();
             s.sound.options.onfinish = regularonfinish;
-        }
+        }});
     }
-    s.sound.play();
 }
 
 Array.prototype.random_element = function() {
