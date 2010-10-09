@@ -157,6 +157,13 @@ var onstops = [];
 
 $(function() {
     soundManager.onload = function() {
+        var train_sounds = $.map([0,1,2,3,4,5,6,7,8,9,10],
+                                 function(i) {
+                                     return soundManager.createSound({
+                                         id: 'train' + i,
+                                         url: 'sounds/Tube' + (i + 1) + '.mp3',
+                                         autoLoad: false });});
+
         var id_prefix = 'stop';
         for(var i = 0; i != audio_files.length; i++) {
             stops[i] = new Stop(id_prefix+i, audio_files[i]);
@@ -211,11 +218,17 @@ $(function() {
             // set the chain up
             var next = s;
             while(s = o.pop()) {
-                s.sound.options.onjustbeforefinish = (function(next) {
+                var ts = train_sounds.random_element();
+                ts.load();
+                s.sound.options.onjustbeforefinish = (function(next, ts) {
                     return function() {
-                        next.sound.play();
+                        // pick a random train sound
+                        ts.options.onjustbeforefinish = function() {
+                            next.sound.play();
+                        }
+                        ts.play();
                     }
-                })(next);
+                })(next, ts);
                 next = s;
             }
 
@@ -224,3 +237,11 @@ $(function() {
         });
     }
 });
+
+Array.prototype.random_element = function() {
+    function getRandomInt(min, max)  
+    {  
+        return Math.floor(Math.random() * (max - min + 1)) + min;  
+    }
+    return this[getRandomInt(0, this.length + 1)];
+}
