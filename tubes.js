@@ -164,84 +164,91 @@ function Stop(id, stop) {
     this.id = id;
     this.x = stop.x;
     this.y = stop.y;
-    this.sound = soundManager.createSound({
-        id: id + '_audio',
-        url: "sounds/" + stop.audio,
-        autoLoad: false,
-        onplay: (function(o) {
-            return function() {
-                $('#' + o.buttonId()).addClass('station-button-playing');
-            }
-        })(this),
-        onfinish: (function(o) {
-            return function() {
-                $('#' + o.buttonId()).removeClass('station-button-playing');
-            }
-        })(this)
-    });
     this.on = false;
     this.buttonId = function() {
         return this.id + '_button';
     }
+    this.makeSound = function() {
+        this.sound = soundManager.createSound({
+            id: id + '_audio',
+            url: 'sounds/' + stop.audio,
+            autoLoad: false,
+            onplay: (function(o) {
+                return function() {
+                    $('#' + o.buttonId()).addClass('station-button-playing');
+                }
+            })(this),
+            onfinish: (function(o) {
+                return function() {
+                    $('#' + o.buttonId()).removeClass('station-button-playing');
+                }
+            })(this)
+        });
+    }
 }
 
 var stops = [];
+(function() {
+    var id_prefix = 'stop';
+    for(var i = 0; i != audio_files.length; i++) {
+        stops[i] = new Stop(id_prefix+i, audio_files[i]);
+    }
+})();
+
 var onstops = [];
 var train_sounds = [];
 
 $(function() {
-    soundManager.onload = function() {
-        train_sounds = $.map([0,1,2,3,4,5,6,7,8,9,10],
-                             function(i) {
-                                 return soundManager.createSound({
-                                     id: 'train' + i,
-                                     url: 'sounds/Tube' + (i + 1) + '.mp3',
-                                     autoLoad: false });});
-
-        var id_prefix = 'stop';
-        for(var i = 0; i != audio_files.length; i++) {
-            stops[i] = new Stop(id_prefix+i, audio_files[i]);
-        }
-
-        function makeToggler(j) {
-            return function() {
-                $(this).toggleClass('station-button-on');
-                stops[j].on = !stops[j].on;
-                if(stops[j].on) {
-                    onstops.push(stops[j]);
-                }
-                else {
-                    onstops = onstops.filter(function(e) {
-                        return e.id != stops[j].id;
-                    });
-                }
+    function makeToggler(j) {
+        return function() {
+            $(this).toggleClass('station-button-on');
+            stops[j].on = !stops[j].on;
+            if(stops[j].on) {
+                onstops.push(stops[j]);
+            }
+            else {
+                onstops = onstops.filter(function(e) {
+                    return e.id != stops[j].id;
+                });
             }
         }
-        for(var i = 0; i != stops.length; i++) {
-            var button_id = stops[i].buttonId();
-            $('#tubemap').append('<input type="button" class="station-button" id="' + button_id + '"/>');
-            $('#' + button_id)
-                .click(makeToggler(i))
-                .css(
-                    {position: 'absolute',
-                     top: stops[i].y,
-                     left: stops[i].x});
-        }
-
-        $('#play_button').click(function() {
-            $(this).attr('disabled', true);
-
-            // i'm going to use shift, so copy the array first
-            var o = onstops.slice(0);
-            
-            // load up all of the sounds
-            $.each(o, function(i, x) { x.sound.load(); });
-
-            // aaand start 'em playing
-            playNext(o.shift(), o);
-        });
     }
+
+    for(var i = 0; i != stops.length; i++) {
+        var button_id = stops[i].buttonId();
+        $('#tubemap').append('<input type="button" class="station-button" id="' + button_id + '"/>');
+        $('#' + button_id)
+            .click(makeToggler(i))
+            .css(
+                {position: 'absolute',
+                 top: stops[i].y,
+                 left: stops[i].x});
+    }
+    
+    $('#play_button').click(function() {
+        $(this).attr('disabled', true);
+        
+        // i'm going to use shift, so copy the array first
+        var o = onstops.slice(0);
+        
+        // load up all of the sounds
+        $.each(o, function(i, x) { x.sound.load(); });
+        
+        // aaand start 'em playing
+        playNext(o.shift(), o);
+    });
 });
+
+soundManager.onload = function() {
+    train_sounds = $.map([0,1,2,3,4,5,6,7,8,9,10],
+                         function(i) {
+                             return soundManager.createSound({
+                                 id: 'train' + i,
+                                 url: 'sounds/Tube' + (i + 1) + '.mp3',
+                                 autoLoad: false });});
+    $.each(stops, function(i, s) { s.makeSound() });
+    $('#play_button').attr('disabled', false);
+}
 
 function playNext(s, stops) {
     var next;
