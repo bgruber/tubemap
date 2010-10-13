@@ -260,11 +260,8 @@ function playNext(s, stops) {
             }});
         }});
     } else {
-        var regularonfinish = s.sound.options.onfinish;
-        s.sound.play({onfinish: function() {
+        s.sound.play({onbeforefinishcomplete: function() {
             $('#play_button').attr('disabled', false);
-            regularonfinish();
-            s.sound.options.onfinish = regularonfinish;
         }});
     }
 }
