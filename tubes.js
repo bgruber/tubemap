@@ -173,6 +173,7 @@ function Stop(id, stop) {
             id: id + '_audio',
             url: 'sounds/' + stop.audio,
             autoLoad: false,
+            onjustbeforefinishtime: 1000,
             onplay: (function(o) {
                 return function() {
                     $('#' + o.buttonId()).addClass('station-button-playing');
@@ -245,6 +246,7 @@ soundManager.onload = function() {
                              return soundManager.createSound({
                                  id: 'train' + i,
                                  url: 'sounds/Tube' + (i + 1) + '.mp3',
+                                 onjustbeforefinishtime: 1000,
                                  autoLoad: false });});
     $.each(stops, function(i, s) { s.makeSound() });
     $('#play_button').attr('disabled', false);
