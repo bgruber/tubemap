@@ -1,13 +1,17 @@
+#tubemap {
+    position: relative;
+}
+
 .station-button {
+    background-color: transparent;
+    background-image: url('unselected-button.png');
     border-style: none;
-    background-color: grey;
-    height: 14px;
-    width: 14px;
-    border-radius: 7px;
-    -moz-border-radius: 7px;
+    height: 20px;
+    width: 20px;
+    opacity: zero;
 }
 .station-button-on {
-    background-color: red;
+    background-image: url('selected-button.png');
 }
 .station-button-playing {
     background-color: green;
