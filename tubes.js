@@ -186,7 +186,7 @@ function Stop(id, stop) {
                     }
                     animateTrans();
                 }
-            })(this),
+            })(this)
         });
     }
 }
