@@ -259,6 +259,7 @@ function playNext(s, stops) {
     var next;
     if (next = stops.shift()) {
         var trainSound = train_sounds.random_element();
+        trainSound.load();
         s.sound.play({onjustbeforefinish: function() {
             trainSound.play({onjustbeforefinish: function() {
                 playNext(next, stops);
