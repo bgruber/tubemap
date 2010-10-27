@@ -29,6 +29,7 @@ if (!Array.prototype.filter)
   };  
 }
 
+var overlap_time = 1000;
 var sound_dir = "sounds";
 var audio_files = [{audio: "Algate.mp3",
                     x: 968, y: 305},
@@ -173,7 +174,7 @@ function Stop(id, stop) {
             id: id + '_audio',
             url: 'sounds/' + stop.audio,
             autoLoad: false,
-            onjustbeforefinishtime: 1000,
+            onjustbeforefinishtime: overlap_time,
             onplay: (function(o) {
                 return function() {
                     $('#' + o.buttonId()).addClass('station-button-playing');
@@ -246,7 +247,7 @@ soundManager.onload = function() {
                              return soundManager.createSound({
                                  id: 'train' + i,
                                  url: 'sounds/Tube' + (i + 1) + '.mp3',
-                                 onjustbeforefinishtime: 1000,
+                                 onjustbeforefinishtime: overlap_time,
                                  autoLoad: false });});
     $.each(stops, function(i, s) { s.makeSound() });
     $('#play_button').attr('disabled', false);
