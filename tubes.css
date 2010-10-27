@@ -8,11 +8,7 @@
     border-style: none;
     height: 20px;
     width: 20px;
-    opacity: zero;
 }
 .station-button-on {
     background-image: url('selected-button.png');
-}
-.station-button-playing {
-    background-color: green;
 }

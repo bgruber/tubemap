@@ -177,14 +177,16 @@ function Stop(id, stop) {
             onjustbeforefinishtime: overlap_time,
             onplay: (function(o) {
                 return function() {
-                    $('#' + o.buttonId()).addClass('station-button-playing');
+                    function animateTrans() {
+                        if(o.sound.playState == 1) {
+                            $('#' + o.buttonId()).animate({opacity: 'toggle'}, {complete: animateTrans, duration: 1000});
+                        } else {
+                            $('#' + o.buttonId()).animate({opacity: 'show'});
+                        }
+                    }
+                    animateTrans();
                 }
             })(this),
-            onfinish: (function(o) {
-                return function() {
-                    $('#' + o.buttonId()).removeClass('station-button-playing');
-                }
-            })(this)
         });
     }
 }
