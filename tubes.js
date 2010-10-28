@@ -165,7 +165,6 @@ function Stop(id, stop) {
     this.id = id;
     this.x = stop.x;
     this.y = stop.y;
-    this.on = false;
     this.buttonId = function() {
         return this.id + '_button';
     }
@@ -189,6 +188,11 @@ function Stop(id, stop) {
             })(this)
         });
     }
+    this.on = false;
+    this.toggleOn = function() {
+        this.on = !this.on;
+        $('#' + this.buttonId()).toggleClass('station-button-on');
+    };
 }
 
 var stops = [];
@@ -205,8 +209,7 @@ var train_sounds = [];
 $(function() {
     function makeToggler(j) {
         return function() {
-            $(this).toggleClass('station-button-on');
-            stops[j].on = !stops[j].on;
+            stops[j].toggleOn();
             if(stops[j].on) {
                 onstops.push(stops[j]);
             }
@@ -223,14 +226,16 @@ $(function() {
         $('#tubemap').append('<input type="button" class="station-button" id="' + button_id + '"/>');
         $('#' + button_id)
             .click(makeToggler(i))
-            .css(
-                {position: 'absolute',
-                 top: stops[i].y,
-                 left: stops[i].x});
+            .css({position: 'absolute',
+                  top: stops[i].y,
+                  left: stops[i].x});
     }
+
+    $('#clear_button').click(clearOnStops);
     
     $('#play_button').click(function() {
         $(this).attr('disabled', true);
+        $('#clear_button').attr('disabled', true);
         
         // i'm going to use shift, so copy the array first
         var o = onstops.slice(0);
@@ -268,8 +273,18 @@ function playNext(s, stops) {
     } else {
         s.sound.play({onbeforefinishcomplete: function() {
             $('#play_button').attr('disabled', false);
+            $('#clear_button').attr('disabled', false);
+            clearOnStops();
         }});
     }
+}
+
+
+function clearOnStops() {
+    $.each(onstops, function(i, s) {
+        s.toggleOn();
+    });
+    onstops = [];
 }
 
 Array.prototype.random_element = function() {
