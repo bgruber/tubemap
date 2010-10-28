@@ -30,6 +30,7 @@ if (!Array.prototype.filter)
 }
 
 var overlap_time = 1000;
+var initial_volume = 60;
 var sound_dir = "sounds";
 var audio_files = [{audio: "Algate.mp3",
                     x: 968, y: 305},
@@ -174,6 +175,7 @@ function Stop(id, stop) {
             url: 'sounds/' + stop.audio,
             autoLoad: false,
             onjustbeforefinishtime: overlap_time,
+            volume: initial_volume,
             onplay: (function(o) {
                 return function() {
                     function animateTrans() {
@@ -246,6 +248,19 @@ $(function() {
         // aaand start 'em playing
         playNext(o.shift(), o);
     });
+
+    $('#volume_slider').slider({
+        min: 0,
+        max: 100,
+        value: initial_volume,
+        disabled: true,
+        slide: function(event, ui) {
+            // possibility: keep track of whatever sounds are
+            // currently playing and do those first.
+            $.each(train_sounds, function(i, s) { s.setVolume(ui.value); });
+            $.each(stops, function(i, s) { s.sound.setVolume(ui.value); });
+        }
+    });
 });
 
 soundManager.onload = function() {
@@ -258,6 +273,7 @@ soundManager.onload = function() {
                                  autoLoad: false });});
     $.each(stops, function(i, s) { s.makeSound() });
     $('#play_button').attr('disabled', false);
+    $('#volume_slider').slider('option', 'disabled', false);
 }
 
 function playNext(s, stops) {
