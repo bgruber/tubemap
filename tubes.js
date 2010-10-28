@@ -1,32 +1,32 @@
 // because IE8 doesn't have Array.filter...
-if (!Array.prototype.filter)  
-{  
-  Array.prototype.filter = function(fun /*, thisp */)  
-  {  
-    "use strict";  
-  
-    if (this === void 0 || this === null)  
-      throw new TypeError();  
-  
-    var t = Object(this);  
-    var len = t.length >>> 0;  
-    if (typeof fun !== "function")  
-      throw new TypeError();  
-  
-    var res = [];  
-    var thisp = arguments[1];  
-    for (var i = 0; i < len; i++)  
-    {  
-      if (i in t)  
-      {  
-        var val = t[i]; // in case fun mutates this  
-        if (fun.call(thisp, val, i, t))  
-          res.push(val);  
-      }  
-    }  
-  
-    return res;  
-  };  
+if (!Array.prototype.filter)
+{
+  Array.prototype.filter = function(fun /*, thisp */)
+  {
+    "use strict";
+
+    if (this === void 0 || this === null)
+      throw new TypeError();
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (typeof fun !== "function")
+      throw new TypeError();
+
+    var res = [];
+    var thisp = arguments[1];
+    for (var i = 0; i < len; i++)
+    {
+      if (i in t)
+      {
+        var val = t[i]; // in case fun mutates this
+        if (fun.call(thisp, val, i, t))
+          res.push(val);
+      }
+    }
+
+    return res;
+  };
 }
 
 var overlap_time = 1000;
@@ -232,17 +232,17 @@ $(function() {
     }
 
     $('#clear_button').click(clearOnStops);
-    
+
     $('#play_button').click(function() {
         $(this).attr('disabled', true);
         $('#clear_button').attr('disabled', true);
-        
+
         // i'm going to use shift, so copy the array first
         var o = onstops.slice(0);
-        
+
         // load up all of the sounds
         $.each(o, function(i, x) { x.sound.load(); });
-        
+
         // aaand start 'em playing
         playNext(o.shift(), o);
     });
@@ -279,7 +279,6 @@ function playNext(s, stops) {
     }
 }
 
-
 function clearOnStops() {
     $.each(onstops, function(i, s) {
         s.toggleOn();
@@ -288,9 +287,9 @@ function clearOnStops() {
 }
 
 Array.prototype.random_element = function() {
-    function getRandomInt(min, max)  
-    {  
-        return Math.floor(Math.random() * (max - min + 1)) + min;  
+    function getRandomInt(min, max)
+    {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     return this[getRandomInt(0, this.length - 1)];
 }
