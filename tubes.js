@@ -223,14 +223,10 @@ $(function() {
         }
     }
 
+    var svg = $('#map-svg')[0].contentDocument;
     for(var i = 0; i != stops.length; i++) {
         var button_id = stops[i].buttonId();
-        $('#tubemap').append('<input type="button" class="station-button" id="' + button_id + '"/>');
-        $('#' + button_id)
-            .click(makeToggler(i))
-            .css({position: 'absolute',
-                  top: stops[i].y,
-                  left: stops[i].x});
+        $(svg.getElementById(button_id)).click(makeToggler(i));
     }
 
     $('#clear_button').click(clearOnStops);

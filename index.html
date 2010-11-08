@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>The Tube</title>
+    <script src="svgweb/svg.js" data-path="svgweb"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
     <script src="sm/soundmanager2.js"></script>
@@ -11,7 +12,15 @@
   </head>
   <body>
     <div id="tubemap">
-      <img src="map.png" />
+      <!--[if IE]>
+          <object src="map.svg" classid="image/svg+xml"
+                  id="map-svg">
+            <![endif]-->
+      <!--[if !IE]>-->
+      <object data="map.svg" type="image/svg+xml" 
+              id="map-svg">
+        <!--<![endif]-->
+      </object>
     </div>
     <div id="controls">
       <input type="button" value="Play" disabled="disabled" id="play_button" />
