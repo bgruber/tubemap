@@ -162,19 +162,33 @@ soundManager.useHTML5Audio = true;
 soundManager.debugMode = true;
 soundManager.debugFlash = true;
 
+function overlappingLoad(sound) {
+    var onLoadOverlapQueue = function() {
+        var overlapPosition = this.duration - overlap_time;
+        this.onPosition(overlapPosition, function() {
+            var next;
+            if(next = this.overlapQueue.shift()) {
+                next();
+            }
+        });
+    };
+
+    sound.overlapQueue = sound.overlapQueue || [];
+    sound.load({onload: onLoadOverlapQueue});
+}
+
 function Stop(id, stop) {
     this.id = id;
     this.x = stop.x;
     this.y = stop.y;
     this.buttonId = function() {
         return this.id + '_button';
-    }
+    };
     this.makeSound = function() {
         this.sound = soundManager.createSound({
             id: id + '_audio',
             url: 'sounds/' + stop.audio,
             autoLoad: false,
-            onjustbeforefinishtime: overlap_time,
             volume: initial_volume,
             onplay: (function(o) {
                 return function() {
@@ -186,10 +200,10 @@ function Stop(id, stop) {
                         }
                     }
                     animateTrans();
-                }
+                };
             })(this)
         });
-    }
+    };
     this.on = false;
     this.toggleOn = function() {
         this.on = !this.on;
@@ -220,7 +234,7 @@ $(function() {
                     return e.id != stops[j].id;
                 });
             }
-        }
+        };
     }
 
     for(var i = 0; i != stops.length; i++) {
@@ -239,14 +253,8 @@ $(function() {
         $(this).attr('disabled', true);
         $('#clear_button').attr('disabled', true);
 
-        // i'm going to use shift, so copy the array first
-        var o = onstops.slice(0);
-
-        // load up all of the sounds
-        $.each(o, function(i, x) { x.sound.load(); });
-
-        // aaand start 'em playing
-        playNext(o.shift(), o);
+        var sounds = listOfSounds(onstops, train_sounds);
+        playOverlappingSoundList(sounds);
     });
 
     $('#volume_slider').slider({
@@ -269,29 +277,56 @@ soundManager.onload = function() {
                              return soundManager.createSound({
                                  id: 'train' + i,
                                  url: 'sounds/Tube' + (i + 1) + '.mp3',
-                                 onjustbeforefinishtime: overlap_time,
-                                 autoLoad: false });});
+                                 autoLoad: false });
+                         });
     $.each(stops, function(i, s) { s.makeSound() });
     $('#play_button').attr('disabled', false);
     $('#volume_slider').slider('option', 'disabled', false);
+};
+
+function lastOnFinish() {
+    $('#play_button').attr('disabled', false);
+    $('#clear_button').attr('disabled', false);
+    clearOnStops();
 }
 
-function playNext(s, stops) {
-    var next;
-    if (next = stops.shift()) {
-        var trainSound = train_sounds.random_element();
-        trainSound.load();
-        s.sound.play({onjustbeforefinish: function() {
-            trainSound.play({onjustbeforefinish: function() {
-                playNext(next, stops);
-            }});
-        }});
+function listOfSounds(stops, allTrainSounds) {
+    var sounds = [];
+    for (var i = 0; i < stops.length - 1; i++) {  // don't handle the last stop
+        var stop = stops[i];
+        overlappingLoad(stop.sound);
+        sounds.push(stop.sound);
+        var ts = allTrainSounds.random_element();
+        overlappingLoad(ts);
+        sounds.push(ts);
+    }
+    var lastStop = stops[stops.length - 1];
+    overlappingLoad(lastStop.sound);
+    sounds.push(lastStop.sound);
+    return sounds;
+}
+
+function playOverlappingSoundList(sounds) {
+    function addOverlap(sound, nextSound) {
+        sound.overlapQueue.push(function() { nextSound.play(); });
+    }
+
+    if (sounds.length > 1) {
+        // don't handle the last 2 sounds in this loop
+        for (var i = 0; i < sounds.length - 2; i++) {
+            addOverlap(sounds[i], sounds[i + 1]);
+        }
+
+        var nextToLastSound = sounds[sounds.length - 2];
+        var lastSound = sounds[sounds.length - 1];
+
+        nextToLastSound.overlapQueue.push(function() {
+            lastSound.play({onfinish: lastOnFinish});
+        });
+
+        sounds[0].play();
     } else {
-        s.sound.play({onbeforefinishcomplete: function() {
-            $('#play_button').attr('disabled', false);
-            $('#clear_button').attr('disabled', false);
-            clearOnStops();
-        }});
+        sounds[0].play({onfinish: lastOnFinish});
     }
 }
 
